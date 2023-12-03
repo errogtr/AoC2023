@@ -1,20 +1,19 @@
-from functools import partial
 from math import prod
 import re
 
 
-with open("data") as f:
-    games = f.readlines()
-
 COLORS = ["red", "green", "blue"]
-CUBES_REGEX = re.compile(rf"(\d+) ({'|'.join(COLORS)})")
+
+with open("data") as f:
+    games = [re.findall(rf"(\d+) ({'|'.join(COLORS)})", game) for game in f.readlines()]
+
 
 # ========== PART 1 ==========
-MAX_PER_COLOR = {"red": 12, "green": 13, "blue": 14}
+MAX_PER_COLOR = dict(zip(COLORS, [12, 13, 14]))
 
 
-def is_possible(game: str) -> bool:
-    for num, color in CUBES_REGEX.findall(game):
+def is_possible(game: list) -> bool:
+    for num, color in game:
         if int(num) > MAX_PER_COLOR[color]:
             return False
     return True
@@ -24,17 +23,11 @@ print(sum(idx for idx, game in enumerate(games, 1) if is_possible(game)))
 
 
 # ========== PART 2 ==========
-def fewest_cubes_num(target: str, cubes: list) -> int:
-    return max(int(num) for num, color in cubes if color == target)
-
-
-def min_power_set(game: str) -> int:
-    return prod(
-        map(
-            partial(fewest_cubes_num, cubes=CUBES_REGEX.findall(game)),
-            COLORS,
-        )
-    )
+def min_power_set(game: list) -> int:
+    counter = dict(zip(COLORS, [0] * 3))
+    for num, color in game:
+        counter[color] = max(counter[color], int(num))
+    return prod(counter.values())
 
 
 print(sum(min_power_set(game) for game in games))
