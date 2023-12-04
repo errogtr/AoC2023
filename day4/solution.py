@@ -1,5 +1,4 @@
 import re
-from math import pow
 
 with open("data") as f:
     lines = f.read().splitlines()
@@ -13,9 +12,8 @@ for i, line in enumerate(lines):
         str.split, re.sub(r"Card\s+\d:", "", line).split("|")
     )
     my_winning_numbers = len(set(winning_numbers) & set(my_numbers))
-    card_points = pow(2, my_winning_numbers - 1) if my_winning_numbers > 0 else 0
-    points += card_points
+    points += 2**my_winning_numbers // 2
     for j in range(i + 1, i + my_winning_numbers + 1):
         cards_num[j] += cards_num[i]
 
-print(int(points), sum(cards_num), sep="\n")
+print(points, sum(cards_num), sep="\n")
