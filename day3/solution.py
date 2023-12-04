@@ -14,25 +14,20 @@ for y, line in enumerate(lines):
 
 # checking if a number has a rectangular neighborhood containing a symbol and
 # building a grid as {symbol_position: [part numbers list]}
-part_numbers = defaultdict(list)
+gears = defaultdict(list)
 part_numbers_sum = 0
 for y, line in enumerate(lines):
-    for num in re.finditer(r"\d+", line):
-        for s_x, s_y in symbols:
-            if (num.start() - 1 <= s_x <= num.end()) and (y - 1 <= s_y <= y + 1):
-                int_num = int(num.group())
-                part_numbers[(s_x, s_y)].append(int_num)
-                part_numbers_sum += int_num
+    for match in re.finditer(r"\d+", line):
+        for (s_x, s_y), c in symbols.items():
+            if (match.start() - 1 <= s_x <= match.end()) and (y - 1 <= s_y <= y + 1):
+                num = int(match.group())
+                part_numbers_sum += num
+                if c == "*":
+                    gears[(s_x, s_y)].append(num)
                 break
 
 # ========= PART 1 =========
 print(part_numbers_sum)
 
 # ========= PART 2 =========
-print(
-    sum(
-        prod(parts)
-        for pos, parts in part_numbers.items()
-        if len(parts) == 2 and symbols[pos] == "*"
-    )
-)
+print(sum(prod(part_nums) for part_nums in gears.values() if len(part_nums) == 2))
