@@ -6,11 +6,12 @@ with open("data") as f:
     lines = f.read().split("\n")
 
 # building symbols grid as {xy_position: symbol}
-symbols = dict()
-for y, line in enumerate(lines):
-    for x, c in enumerate(line):
-        if c not in "1234567890.":
-            symbols[(x, y)] = c
+symbols = {
+    (x, y): c
+    for y, line in enumerate(lines)
+    for x, c in enumerate(line)
+    if c not in "1234567890."
+}
 
 # checking if a number has a rectangular neighborhood containing a symbol and
 # building a gear grid as {gear_position: [part numbers list]}
