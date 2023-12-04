@@ -13,7 +13,7 @@ for y, line in enumerate(lines):
             symbols[(x, y)] = c
 
 # checking if a number has a rectangular neighborhood containing a symbol and
-# building a grid as {symbol_position: [part numbers list]}
+# building a gear grid as {gear_position: [part numbers list]}
 gears = defaultdict(list)
 part_numbers_sum = 0
 for y, line in enumerate(lines):
