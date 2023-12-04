@@ -5,12 +5,15 @@ from math import prod
 with open("data") as f:
     lines = f.read().split("\n")
 
+# building symbols grid as {xy_position: symbol}
 symbols = dict()
 for y, line in enumerate(lines):
     for x, c in enumerate(line):
-        if not c.isdigit() and c != ".":
+        if c not in "1234567890.":
             symbols[(x, y)] = c
 
+# checking if a number has a rectangular neighborhood containing a symbol and
+# building a grid as {symbol_position: [part numbers list]}
 part_numbers = defaultdict(list)
 part_numbers_sum = 0
 for y, line in enumerate(lines):
