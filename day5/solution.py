@@ -9,16 +9,17 @@ def locations(intervals):
             x, y = intervals.pop()
             for mapping in mappings:
                 a, b, delta = mapping
-                r_endpoint = b + delta - 1
-                if b <= x <= y <= r_endpoint:
-                    images.append((x - b + a, y - b + a))
+                c = b + delta - 1
+                t = b - a
+                if b <= x <= y <= c:
+                    images.append((x - t, y - t))
                     break
-                elif b <= x <= r_endpoint < y:
-                    images.append((x - b + a, r_endpoint - b + a))
-                    intervals.append((r_endpoint + 1, y))
+                elif b <= x <= c < y:
+                    images.append((x - t, c - t))
+                    intervals.append((c + 1, y))
                     break
-                elif x < b <= y <= r_endpoint:
-                    images.append((a, y - b + a))
+                elif x < b <= y <= c:
+                    images.append((b - t, y - t))
                     intervals.append((x, b - 1))
                     break
             else:
