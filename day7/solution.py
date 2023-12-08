@@ -1,82 +1,41 @@
 from collections import Counter
-from copy import copy
-
-HAND_TYPES = {"11111": 0, "1112": 1, "122": 2, "113": 3, "23": 4, "14": 5, "5": 6}
 
 
-def get_cards_order(suits):
-    return dict(zip(suits, range(len(suits))))
+def hand_score(hand, hand_with_joker, cards_order):
+    hand_type = "".join(
+        map(str, sorted(Counter(hand_with_joker).values(), reverse=True))
+    ).ljust(5, "0")
+    cards_points = dict(zip(cards_order, range(len(cards_order))))
+    cards_scores = "".join(str(cards_points[c]).rjust(2, "0") for c in hand)
+    return hand_type + cards_scores
 
 
-def hand_type(hand):
-    return "".join(map(str, sorted(Counter(hand).values())))
+def score(hand, cards_order="23456789TJQKA"):
+    return hand_score(hand, hand, cards_order)
 
 
-def hand_type_with_joker(hand):
-    if "J" not in hand:
-        return HAND_TYPES[hand_type(hand)]
-    if hand.count("J") == len(hand):
-        return HAND_TYPES[str(len(hand))]
-    return max(HAND_TYPES[hand_type(hand.replace("J", h))] for h in set(hand) - {"J"})
-
-
-def sort_hand(card, cards_order):
-    return cards_order[card]
-
-
-def swap(left, right, cards_order):
-    type_left = HAND_TYPES[hand_type(left)]
-    type_right = HAND_TYPES[hand_type(right)]
-    if type_left > type_right:
-        return True
-    if type_left == type_right:
-        for x, y in zip(left, right):
-            if cards_order[x] > cards_order[y]:
-                return True
-            if cards_order[x] < cards_order[y]:
-                return False
-    return False
-
-
-def swap_with_joker(left, right, cards_order):
-    type_left = hand_type_with_joker(left)
-    type_right = hand_type_with_joker(right)
-    if type_left > type_right:
-        return True
-    if type_left == type_right:
-        for x, y in zip(left, right):
-            if cards_order[x] > cards_order[y]:
-                return True
-            if cards_order[x] < cards_order[y]:
-                return False
-    return False
+def score_with_joker(hand, cards_order="J23456789TQKA"):
+    hand_with_joker = sorted(
+        [hand.replace("J", c) for c in set(hand) - {"J"}] or ["AAAAA"], key=score
+    )[-1]
+    return hand_score(hand, hand_with_joker, cards_order)
 
 
 with open("data") as f:
-    all_hands = [x.split() for x in f.read().splitlines()]
+    hands, bids = zip(*map(str.split, f.read().splitlines()))
 
-cards_order = get_cards_order("23456789TJQKA")
-sorted_hands = copy(all_hands)
-n_hands = len(sorted_hands)
-for i in range(n_hands):
-    for j in range(n_hands - i - 1):
-        left = sorted_hands[j][0]
-        right = sorted_hands[j + 1][0]
-        if swap(left, right, cards_order):
-            sorted_hands[j], sorted_hands[j + 1] = sorted_hands[j + 1], sorted_hands[j]
+hands2bids = dict(zip(hands, bids))
+
+# ========== PART 1 ===========
+print(
+    sum(i * int(hands2bids[hand]) for i, hand in enumerate(sorted(hands, key=score), 1))
+)
 
 
-print(sum(i * int(bid) for i, (hand, bid) in enumerate(sorted_hands, 1)))
-
-
-cards_order = get_cards_order("J23456789TQKA")
-sorted_hands = copy(all_hands)
-n_hands = len(sorted_hands)
-for i in range(n_hands):
-    for j in range(n_hands - i - 1):
-        left = sorted_hands[j][0]
-        right = sorted_hands[j + 1][0]
-        if swap_with_joker(left, right, cards_order):
-            sorted_hands[j], sorted_hands[j + 1] = sorted_hands[j + 1], sorted_hands[j]
-
-print(sum(i * int(bid) for i, (hand, bid) in enumerate(sorted_hands, 1)))
+# ========== PART 2 ===========
+print(
+    sum(
+        i * int(hands2bids[hand])
+        for i, hand in enumerate(sorted(hands, key=score_with_joker), 1)
+    )
+)
