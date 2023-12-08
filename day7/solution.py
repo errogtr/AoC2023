@@ -21,21 +21,19 @@ def score_with_joker(hand, cards_order="J23456789TQKA"):
     return hand_score(hand, hand_with_joker, cards_order)
 
 
+def winnings(hands, bids, key):
+    hands2bids = dict(zip(hands, bids))
+    return [
+        i * int(hands2bids[hand]) for i, hand in enumerate(sorted(hands, key=key), 1)
+    ]
+
+
 with open("data") as f:
     hands, bids = zip(*map(str.split, f.read().splitlines()))
 
-hands2bids = dict(zip(hands, bids))
 
 # ========== PART 1 ===========
-print(
-    sum(i * int(hands2bids[hand]) for i, hand in enumerate(sorted(hands, key=score), 1))
-)
-
+print(sum(winnings(hands, bids, score)))
 
 # ========== PART 2 ===========
-print(
-    sum(
-        i * int(hands2bids[hand])
-        for i, hand in enumerate(sorted(hands, key=score_with_joker), 1)
-    )
-)
+print(sum(winnings(hands, bids, score_with_joker)))
