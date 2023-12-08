@@ -24,9 +24,9 @@ network = {l[:3]: (l[7:10], l[12:15]) for l in network}
 print(steps("AAA", network, stopping=lambda x: x == "ZZZ"))
 
 # ========= PART 2 ==========
-min_steps = [
+all_steps = [
     steps(k, network, stopping=lambda x: x.endswith("Z"))
     for k in network
     if k.endswith("A")
 ]
-print(lcm(*min_steps))
+print(lcm(*all_steps))
