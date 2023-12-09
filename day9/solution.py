@@ -1,11 +1,10 @@
-from operator import sub
 from itertools import pairwise
 
 
 def get_next(sequence):
     last = sequence[-1]
     while any(sequence):
-        sequence = [sub(y, x) for x, y in pairwise(sequence)]
+        sequence = [y - x for x, y in pairwise(sequence)]
         last += sequence[-1]
     return last
 
