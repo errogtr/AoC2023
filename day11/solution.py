@@ -8,8 +8,8 @@ def voids(voids_list, a, b):
 with open("data") as f:
     image = f.read().splitlines()
 
-empty_rows = [y for y, row in enumerate(image) if not row.count("#")]
-empty_cols = [x for x, col in enumerate(zip(*image)) if not "".join(col).count("#")]
+empty_rows = [y for y, row in enumerate(image) if row.count("#") == 0]
+empty_cols = [x for x, col in enumerate(zip(*image)) if "".join(col).count("#") == 0]
 galaxies = [
     (x, y) for y, row in enumerate(image) for x, v in enumerate(row) if v == "#"
 ]
