@@ -1,8 +1,8 @@
 from itertools import combinations
 
 
-def voids(voids_list, a, b):
-    return sum(min(a, b) < x < max(a, b) for x in voids_list)
+def voids(voids_axis, a, b):
+    return sum(min(a, b) < x < max(a, b) for x in voids_axis)
 
 
 with open("data") as f:
