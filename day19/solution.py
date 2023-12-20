@@ -20,14 +20,20 @@ def compute_accepted(name, ranges, workflows):
     accepted = []
     *rules, fallback = workflows[name].split(",")
     while rules:
-        char, op, sep, next_name = re.match(r"([xmas])([<>])(\d+):([ARa-z]+)", rules.pop(0)).groups()
+        char, op, sep, next_name = re.match(
+            r"([xmas])([<>])(\d+):([ARa-z]+)", rules.pop(0)
+        ).groups()
         a, b = ranges[char]
         match op:
             case "<":
-                accepted += compute_accepted(next_name, ranges | {char: (a, int(sep) - 1)}, workflows)
+                accepted += compute_accepted(
+                    next_name, ranges | {char: (a, int(sep) - 1)}, workflows
+                )
                 ranges |= {char: (int(sep), b)}
             case ">":
-                accepted += compute_accepted(next_name, ranges | {char: (int(sep) + 1, b)}, workflows)
+                accepted += compute_accepted(
+                    next_name, ranges | {char: (int(sep) + 1, b)}, workflows
+                )
                 ranges |= {char: (a, int(sep))}
 
     accepted += compute_accepted(fallback, ranges, workflows)
