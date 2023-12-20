@@ -13,11 +13,11 @@ def parse_workflow(workflow):
 
 def compute_accepted(name, ranges, workflows):
     if name == "A":
-        return prod(b - a + 1 for a, b in intervals.values())
+        return [ranges]
     if name == "R":
-        return 0
+        return []
 
-    accepted = 0
+    accepted = []
     *rules, fallback = workflows[name].split(",")
     while rules:
         char, op, sep, next_name = re.match(r"([xmas])([<>])(\d+):([ARa-z]+)", rules.pop(0)).groups()
@@ -34,6 +34,19 @@ def compute_accepted(name, ranges, workflows):
     return accepted
 
 
-workflows = dict(parse_workflow(x) for x in raw_workflows.split("\n"))
-intervals = dict(zip("xmas", [(1, 4000)] * 4))
-print(compute_accepted("in", intervals, workflows))
+workflows = dict(parse_workflow(x) for x in raw_workflows.splitlines())
+ranges = dict(zip("xmas", [(1, 4000)] * 4))
+accepted = compute_accepted("in", ranges, workflows)
+
+# ==== PART 1 ====
+accepted_xmas = 0
+for rating in ratings.splitlines():
+    xmas = dict((c, int(v)) for c, v in re.findall(r"([xmas])=(\d+)", rating))
+    for r in accepted:
+        if all(a <= xmas[c] <= b for c, (a, b) in r.items()):
+            accepted_xmas += sum(xmas.values())
+            break
+print(accepted_xmas)
+
+# ==== PART 2 ====
+print(sum(prod(b - a + 1 for a, b in r.values()) for r in accepted))
