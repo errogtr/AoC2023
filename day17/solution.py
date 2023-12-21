@@ -18,7 +18,7 @@ def add(p, q):
 
 def in_grid(p, Lx, Ly):
     x, y = p
-    return True if 0 <= x <= Lx and 0 <= y <= Ly else False
+    return 0 <= x <= Lx and 0 <= y <= Ly
 
 
 def next_moves(current, came_from, steps, max_steps, min_steps):
