@@ -49,8 +49,7 @@ def least_heat_loss(heatmap, max_steps, min_steps, Lx, Ly):
     start, steps, cost = (0, 0), 0, 0
     init_state = start, start, steps
     nodes_cost = {init_state: cost}
-    frontier = []
-    heappush(frontier, (cost, init_state))
+    frontier = [(cost, init_state)]
     while frontier:
         cost, state = heappop(frontier)
         current, came_from, steps = state
